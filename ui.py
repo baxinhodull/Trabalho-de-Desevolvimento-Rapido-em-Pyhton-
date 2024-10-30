@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
 from user import cadastrar, fazer_login
-from product import insert_produto, mostrar_produtos, atualizar_produto, deletar_produto, gerar_relatorio
+from product import insert_produto, mostrar_produtos, atualizar_produto, deletar_produto
+import os
 
 def tela_de_login():
     root = tk.Tk()
@@ -36,7 +37,7 @@ def menuPrincipal():
     tk.Button(root, text="Atualizar Produto", command=tela_de_update).pack(pady=10)
     tk.Button(root, text="Mostrar Produtos", command=tela_de_mostrar).pack(pady=10)
     tk.Button(root, text="Deletar Produto", command=tela_de_deletar).pack(pady=10)
-    tk.Button(root, text="Gerar Relatório", command=tela_de_relatorio).pack(pady=10)
+    tk.Button(root, text="Gerar Relatório", command=gerar_relatorio).pack(pady=10)
 
     root.mainloop()
 
@@ -119,6 +120,25 @@ def tela_de_mostrar():
 
     root.mainloop()
 
-def tela_de_relatorio():
-    gerar_relatorio()
+def gerar_relatorio():
+    caminho_principal = os.path.dirname(os.path.abspath(__file__))
+    caminho_relatorio = os.path.join(caminho_principal, "relatorio.txt")
+
+    produtos = mostrar_produtos()
+
+    with open(caminho_relatorio, "w") as arquivo:
+        arquivo.write("Relatório de Produtos\n")
+        arquivo.write("=====================\n")
+        for produto in produtos:
+            nome, preco, quantidade, codigo = produto
+            arquivo.write(f"Produto: {nome}\n")
+            arquivo.write(f"Preço: R${preco:.2f}\n")
+            arquivo.write(f"Quantidade: {quantidade}\n")
+            arquivo.write(f"Código de Barras: {codigo}\n")
+            arquivo.write("---------------------\n")
+    
     messagebox.showinfo("Sucesso", "Relatório gerado com sucesso em relatorio.txt!")
+    print(f"Relatório gerado com sucesso em: {caminho_relatorio}")
+
+
+tela_de_login()
